@@ -1,6 +1,8 @@
 import express from 'express';
 import router from './router';
 import morgan from 'morgan';
+import {protect} from './../src/modules/auth';
+import { createNewUser, signin } from './handlers/users';
 
 const app = express();
 
@@ -25,13 +27,15 @@ app.use(customLogger('customLogger message'));
 
 
 app.get('/', (req, res) => {
-  res.status(200).send('Hello World!');
-  res.send('Hello World!');
-  res.json({ message: 'Hello World!' });
+  res.status(200).send('hello');
+  res.send('hello');
+  res.json({ message: 'hello' });
 });
 
 
-app.use('/api', router);
+app.use('/api', protect, router);
+app.post('/user', createNewUser)
+app.post('/signin', signin)
 
 export default app;
 
