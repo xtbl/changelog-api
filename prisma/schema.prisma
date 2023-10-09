@@ -15,7 +15,7 @@ model User {
   createdAt DateTime  @default(now())
   username  String    @unique
   password  String
-  Product   Product[]
+  products  Product[]
 }
 
 model Product {
@@ -30,7 +30,6 @@ model Product {
 
 enum UPDATE_STATUS {
   IN_PROGRESS
-  LIVE
   DEPRECATED
   ARCHIVED
 }
