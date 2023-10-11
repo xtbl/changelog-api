@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import {body, oneOf, check, validationResult} from 'express-validator';
 import { customMessage, handleInput } from './modules/middleware';
+import { createProduct, getProducts } from './handlers/product';
 
 const router = Router();
 
-router.get('/product', (req, res) => {
-	res.json({ message: 'product' });
-});
+router.get('/product', getProducts);
 router.get('/product/:id', (req, res) => {});
 // we use express-validator to validate the request body
 // before we pass it to the handler. name is the name of the field `req.body.name`
@@ -20,7 +19,7 @@ router.put('/product/:id',
 	customMessage('custom message'), handleInput,  (req, res) => {
 
 });
-router.post('/product', (req, res) => {});
+router.post('/product', body('name').isString(), handleInput, createProduct);
 router.delete('/product/:id', (req, res) => {});
 
 router.get('/update', (req, res) => {});
