@@ -12,7 +12,6 @@ export const getProducts = async (req, res) => {
 	});
 
 	res.json({data: user.products});
-
 };
 
 // GET One Product
