@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {body, oneOf, check, validationResult} from 'express-validator';
 import { customMessage, handleInput } from './modules/middleware';
 import { createProduct, deleteProduct, getOneProduct, getProducts } from './handlers/product';
+import { createUpdate, deleteUpdate, getOneUpdate, getUpdates, updateUpdate } from './handlers/update';
 
 const router = Router();
 
@@ -29,15 +30,19 @@ router.delete('/product/:id', deleteProduct);
 /**
  * Update
  */
-router.get('/update', (req, res) => {});
-router.get('/update/:id', (req, res) => {});
-router.put('/update/:id', (req, res) => {});
+router.get('/update', getUpdates);
+router.get('/update/:id', getOneUpdate);
 router.post('/update',
 	body('title').optional().isString(),
 	body('body').optional().isString(),
 	body('productId').exists().isString(),
- (req, res) => { });
-router.delete('/update/:id', (req, res) => {});
+ createUpdate);
+router.put('/update/:id',
+	body('title').optional().isString(),
+	body('body').optional().isString(),
+	body('productId').exists().isString(),
+	updateUpdate);
+router.delete('/update/:id', deleteUpdate);
 
 /**
  * UpdatePoint

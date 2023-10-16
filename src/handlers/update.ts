@@ -19,20 +19,6 @@ export const getUpdates = async (req, res) => {
 	return res.json({data: update});
 };
 
-
-// export const getUpdates = async (req, res) => {
-// 	const product = await prisma.product.findUnique({
-// 		where: {
-// 			id: req.user.id
-// 		},
-// 		include:{
-// 			updates: true
-// 		}
-// 	});
-
-// 	res.json({data: product.updates});
-// };
-
 // GET One Update
 export const getOneUpdate = async (req, res) => {
 	const update = await prisma.update.findUnique({
@@ -62,27 +48,71 @@ export const createUpdate = async (req, res) => {
 }
 
 export const updateUpdate = async (req, res) => {
-	const id = req.params.id;
-	const updated = await prisma.update.findUnique({
+	const products = await prisma.product.findMany({
 		where: {
-			id: id
+			belongsToId: req.user.id
+		},
+		include: {
+			updates: true
 		}
 	});
 
-	res.json({ data: updated });
+	const updates = products.reduce((allUpdates, product) => {
+		return [...allUpdates, ...product.updates];
+	}, []);
+
+	const matchingUpdate = updates.find(update => update.id === req.params.id);
+
+	if(!matchingUpdate) {
+		return res.status(404).json({error: 'Update not found'});
+	}
+
+	const updatedUpdate = await prisma.update.update({
+		where: {
+			id: req.params.id
+		},
+		data: req.body
+	});
+
+	res.json({ data: updatedUpdate });
 }
 
-export const deleteProduct = async (req, res) => {
-	const id = req.params.id;
-	const deleted = await prisma.product.delete({
+export const deleteUpdate = async (req, res) => {
+	const products = await prisma.product.findMany({
 		where: {
-			id_belongsToId: {
-				id: id,
-				belongsToId: req.user.id
-			}
-			// id: id,
-			// belongsToId: req.user.id
+			belongsToId: req.user.id
+		},
+		include: {
+			updates: true
 		}
-	})
+	});
+
+	const updates = products.reduce((allUpdates, product) => {
+		return [...allUpdates, ...product.updates];
+	}, []);
+
+	const matchingDelete = updates.find(update => update.id === req.params.id);
+
+	console.log(`DELETE UPDATE`);
+	console.log(`matchingDelete`);
+	console.log(matchingDelete);
+	console.log(`updates`);
+	console.log(updates);
+	console.log(`req.params.id`);
+	console.log(req.params.id);
+
+
+
+	if(!matchingDelete) {
+		return res.status(404).json({error: 'Update not found'});
+	}
+
+	const deleted = await prisma.update.delete({
+		where: {
+			id: req.params.id
+		}
+	});
+
 	res.json({ data: deleted });
+
 }
