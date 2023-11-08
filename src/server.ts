@@ -27,8 +27,6 @@ app.use(customLogger('customLogger message'));
 
 
 app.get('/', (req, res) => {
-  res.status(200).send('hello');
-  res.send('hello');
   res.json({ message: 'hello' });
 });
 
